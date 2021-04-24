@@ -1,0 +1,25 @@
+'use strict';
+
+
+service:
+  name: image-resizing
+
+provider:
+  name: aws
+  runtime: nodejs10
+
+functions:
+  resize:
+    handler: src/handlers/resizer/indexHandler
+    events:
+      - http:
+          path: /{size}/{image}
+          method: put
+    environment:
+      BUCKET: image-resizer-thumbnail
+      REGION: us-west-2
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "s3:PutObject"
+        Resource: "arn:aws:s3:::image-resizer-thumbnail/*"
